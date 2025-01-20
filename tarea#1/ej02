@@ -1,0 +1,55 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("Introduce un número entero de dos dígitos:");
+        int numero;
+
+        
+        if (!int.TryParse(Console.ReadLine(), out numero))
+        {
+            Console.WriteLine("Por favor, introduce un número entero válido.");
+            return;
+        }
+
+        
+        if (numero < -99 || numero > 99 || (numero > -10 && numero < 10))
+        {
+            Console.WriteLine("El número no es de dos dígitos.");
+            return;
+        }
+
+        
+        if (numero < 0)
+        {
+            Console.WriteLine("El número es negativo.");
+        }
+        else
+        {
+            Console.WriteLine("El número no es negativo.");
+        }
+
+        
+        int numeroAbsoluto = Math.Abs(numero);
+        if (EsPrimo(numeroAbsoluto))
+        {
+            Console.WriteLine("El número es primo.");
+        }
+        else
+        {
+            Console.WriteLine("El número no es primo.");
+        }
+    }
+
+    static bool EsPrimo(int numero)
+    {
+        if (numero < 2) return false;
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0) return false;
+        }
+        return true;
+    }
+}
