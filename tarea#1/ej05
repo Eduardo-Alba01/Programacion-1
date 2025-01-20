@@ -1,0 +1,37 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        
+        Console.WriteLine("Introduce un número de tres dígitos:");
+        int numero = int.Parse(Console.ReadLine());
+
+        
+        if (numero < 100 || numero > 999)
+        {
+            Console.WriteLine("El número debe ser de tres dígitos.");
+            return;
+        }
+
+        
+        int centenas = numero / 100;
+        int decenas = (numero / 10) % 10;
+        int unidades = numero % 10;
+
+        
+        if (centenas >= decenas && centenas >= unidades)
+        {
+            Console.WriteLine("El mayor dígito es " + centenas + " y está en la posición 1 (centenas).");
+        }
+        else if (decenas >= centenas && decenas >= unidades)
+        {
+            Console.WriteLine("El mayor dígito es " + decenas + " y está en la posición 2 (decenas).");
+        }
+        else
+        {
+            Console.WriteLine("El mayor dígito es " + unidades + " y está en la posición 3 (unidades).");
+        }
+    }
+}
