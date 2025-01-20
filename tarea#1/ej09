@@ -1,0 +1,32 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Ingrese un número entero de cuatro dígitos:");
+        string input = Console.ReadLine();
+
+        
+        if (input.Length == 4 && int.TryParse(input, out int numero))
+        {
+            
+            char segundoDigito = input[1];
+            char penultimoDigito = input[2];
+
+            
+            if (segundoDigito == penultimoDigito)
+            {
+                Console.WriteLine("El segundo dígito es igual al penúltimo.");
+            }
+            else
+            {
+                Console.WriteLine("El segundo dígito no es igual al penúltimo.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("El número ingresado no es válido. Asegúrese de que tenga exactamente 4 dígitos.");
+        }
+    }
+}
