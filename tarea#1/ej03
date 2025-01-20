@@ -1,0 +1,40 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        
+        Console.Write("Introduce un número de dos dígitos: ");
+        int numero = int.Parse(Console.ReadLine());
+
+        
+        int digito1 = numero / 10;
+        int digito2 = numero % 10;
+
+        
+        if (EsPrimo(digito1) && EsPrimo(digito2))
+        {
+            Console.WriteLine("Ambos dígitos son primos.");
+        }
+        else
+        {
+            Console.WriteLine("Uno o ambos dígitos no son primos.");
+        }
+    }
+
+    
+    static bool EsPrimo(int numero)
+    {
+        if (numero <= 1)
+            return false;
+
+        for (int i = 2; i <= Math.Sqrt(numero); i++)
+        {
+            if (numero % i == 0)
+                return false;
+        }
+
+        return true;
+    }
+}
