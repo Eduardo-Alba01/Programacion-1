@@ -1,0 +1,36 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Introduce un número entero de tres dígitos:");
+        string input = Console.ReadLine();
+
+        if (int.TryParse(input, out int numero) && numero >= 100 && numero <= 999)
+        {
+            
+            int centena = numero / 100;
+            int decena = (numero / 10) % 10;
+            int unidad = numero % 10;
+
+            
+            bool centenaEsMultiplo = (decena != 0 && centena % decena == 0) || (unidad != 0 && centena % unidad == 0);
+            bool decenaEsMultiplo = (centena != 0 && decena % centena == 0) || (unidad != 0 && decena % unidad == 0);
+            bool unidadEsMultiplo = (centena != 0 && unidad % centena == 0) || (decena != 0 && unidad % decena == 0);
+
+            if (centenaEsMultiplo || decenaEsMultiplo || unidadEsMultiplo)
+            {
+                Console.WriteLine("Al menos un dígito es múltiplo de otro.");
+            }
+            else
+            {
+                Console.WriteLine("Ningún dígito es múltiplo de otro.");
+            }
+        }
+        else
+        {
+            Console.WriteLine("El número ingresado no es válido. Asegúrate de que sea un entero de tres dígitos.");
+        }
+    }
+}
