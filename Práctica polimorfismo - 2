@@ -1,0 +1,101 @@
+using System;
+
+namespace PolimorfismoVehiculos
+{
+    public class Vehiculo
+    {
+        public string Marca { get; set; }
+        public string Modelo { get; set; }
+
+        public Vehiculo(string marca, string modelo)
+        {
+            Marca = marca;
+            Modelo = modelo;
+        }
+
+        public virtual void Arrancar()
+        {
+            Console.WriteLine($"{Marca} {Modelo} está arrancando.");
+        }
+
+        public virtual void Detener()
+        {
+            Console.WriteLine($"{Marca} {Modelo} se ha detenido.");
+        }
+
+        public virtual void Acelerar()
+        {
+            Console.WriteLine($"{Marca} {Modelo} está acelerando.");
+        }
+    }
+
+    public class Coche : Vehiculo
+    {
+        public Coche(string marca, string modelo) : base(marca, modelo) { }
+
+        public override void Acelerar()
+        {
+            Console.WriteLine($"{Marca} {Modelo} está acelerando rápidamente.");
+        }
+
+        public override void Detener()
+        {
+            Console.WriteLine($"{Marca} {Modelo} se detiene suavemente.");
+        }
+    }
+
+    public class Motocicleta : Vehiculo
+    {
+        public Motocicleta(string marca, string modelo) : base(marca, modelo) { }
+
+        public override void Arrancar()
+        {
+            Console.WriteLine($"{Marca} {Modelo} arranca con un rugido.");
+        }
+
+        public override void Acelerar()
+        {
+            Console.WriteLine($"{Marca} {Modelo} acelera rápidamente.");
+        }
+    }
+
+    public class Camion : Vehiculo
+    {
+        public Camion(string marca, string modelo) : base(marca, modelo) { }
+
+        public override void Arrancar()
+        {
+            Console.WriteLine($"{Marca} {Modelo} arranca lentamente debido a su tamaño.");
+        }
+
+        public override void Detener()
+        {
+            Console.WriteLine($"{Marca} {Modelo} se detiene con un fuerte frenado.");
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Vehiculo coche = new Coche("Toyota", "Corolla");
+            Vehiculo motocicleta = new Motocicleta("Harley-Davidson", "Sportster");
+            Vehiculo camion = new Camion("Volvo", "FH16");
+
+            Console.WriteLine("Comportamiento del Coche:");
+            coche.Arrancar();
+            coche.Acelerar();
+            coche.Detener();
+
+            Console.WriteLine("\nComportamiento de la Motocicleta:");
+            motocicleta.Arrancar();
+            motocicleta.Acelerar();
+            motocicleta.Detener();
+
+            Console.WriteLine("\nComportamiento del Camión:");
+            camion.Arrancar();
+            camion.Acelerar();
+            camion.Detener();
+        }
+    }
+}
