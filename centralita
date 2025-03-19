@@ -1,0 +1,96 @@
+using System;
+
+public abstract class Llamada
+{
+    public string NumOrigen { get; }
+    public string NumDestino { get; }
+    public double Duracion { get; }
+
+    public Llamada(string numOrigen, string numDestino, double duracion)
+    {
+        NumOrigen = numOrigen;
+        NumDestino = numDestino;
+        Duracion = duracion;
+    }
+
+    public abstract double CalcularPrecio();
+
+    public override string ToString()
+    {
+        return $"Origen: {NumOrigen}, Destino: {NumDestino}, Duración: {Duracion}s";
+    }
+}
+
+public class LlamadaLocal : Llamada
+{
+    private const double PrecioPorSegundo = 0.15;
+
+    public LlamadaLocal(string numOrigen, string numDestino, double duracion)
+        : base(numOrigen, numDestino, duracion) { }
+
+    public override double CalcularPrecio()
+    {
+        return Duracion * PrecioPorSegundo;
+    }
+
+    public override string ToString()
+    {
+        return $"[Local] {base.ToString()}, Costo: {CalcularPrecio():C}";
+    }
+}
+
+public class LlamadaProvincial : Llamada
+{
+    private int Franja;
+    private static readonly double[] Precios = { 0.20, 0.25, 0.30 };
+
+    public LlamadaProvincial(string numOrigen, string numDestino, double duracion, int franja)
+        : base(numOrigen, numDestino, duracion)
+    {
+        if (franja < 1 || franja > 3)
+            throw new ArgumentException("La franja debe ser 1, 2 o 3.");
+        Franja = franja;
+    }
+
+    public override double CalcularPrecio()
+    {
+        return Duracion * Precios[Franja - 1];
+    }
+
+    public override string ToString()
+    {
+        return $"[Provincial] {base.ToString()}, Franja: {Franja}, Costo: {CalcularPrecio():C}";
+    }
+}
+
+public class Centralita
+{
+    private int contadorLlamadas;
+    private double acumuladoFacturacion;
+
+    public int ObtenerTotalLlamadas() => contadorLlamadas;
+    public double ObtenerTotalFacturacion() => acumuladoFacturacion;
+
+    public void RegistrarLlamada(Llamada llamada)
+    {
+        contadorLlamadas++;
+        acumuladoFacturacion += llamada.CalcularPrecio();
+        Console.WriteLine(llamada.ToString());
+    }
+}
+
+public class Practica2
+{
+    static void Main(string[] args)
+    {
+        Centralita centralita = new Centralita();
+
+        centralita.RegistrarLlamada(new LlamadaLocal("123-456-789", "987-654-321", 10));
+        centralita.RegistrarLlamada(new LlamadaProvincial("555-555-555", "666-666-666", 15, 1));
+        centralita.RegistrarLlamada(new LlamadaLocal("111-111-111", "222-222-222", 30));
+        centralita.RegistrarLlamada(new LlamadaProvincial("333-333-333", "444-444-444", 20, 3));
+
+        Console.WriteLine($"Total de llamadas: {centralita.ObtenerTotalLlamadas()}");
+        Console.WriteLine($"Facturación total: {centralita.ObtenerTotalFacturacion():C}");
+    }
+}
