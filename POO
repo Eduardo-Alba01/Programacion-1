@@ -1,0 +1,182 @@
+using System;
+
+class Motor
+{
+    private int litros_de_aceite;
+    private int potencia;
+
+    public Motor(int potencia)
+    {
+        this.potencia = potencia;
+        this.litros_de_aceite = 0;
+    }
+
+    public int LitrosDeAceite
+    {
+        get { return litros_de_aceite; }
+        set { litros_de_aceite = value; }
+    }
+
+    public int Potencia
+    {
+        get { return potencia; }
+        set { potencia = value; }
+    }
+}
+
+class Coche
+{
+    private Motor motor;
+    private string marca;
+    private string modelo;
+    private double precio_averias;
+
+    public Coche(string marca, string modelo)
+    {
+        this.marca = marca;
+        this.modelo = modelo;
+        this.motor = new Motor(0);
+        this.precio_averias = 0;
+    }
+
+    public Motor Motor
+    {
+        get { return motor; }
+    }
+
+    public string Marca
+    {
+        get { return marca; }
+    }
+
+    public string Modelo
+    {
+        get { return modelo; }
+    }
+
+    public double PrecioAverias
+    {
+        get { return precio_averias; }
+    }
+
+    public void AcumularAveria(double importe)
+    {
+        this.precio_averias += importe;
+    }
+}
+
+class Garaje
+{
+    private Coche coche;
+    private string averia;
+    private int coches_atendidos;
+
+    public Garaje()
+    {
+        this.coche = null;
+        this.averia = "";
+        this.coches_atendidos = 0;
+    }
+
+    public bool AceptarCoche(Coche coche, string averia)
+    {
+        if (this.coche != null)
+        {
+            return false;
+        }
+
+        this.coche = coche;
+        this.averia = averia;
+        this.coches_atendidos++;
+        return true;
+    }
+
+    public Coche DevolverCoche()
+    {
+        double importe = new Random().NextDouble() * 100; // Random repair cost between 0 and 100
+        this.coche.AcumularAveria(importe);
+
+        if (this.averia == "aceite")
+        {
+            this.coche.Motor.LitrosDeAceite += 10;
+        }
+
+        Coche cocheDevuelto = this.coche;
+        this.coche = null;
+        this.averia = "";
+        return cocheDevuelto;
+    }
+
+    public int CochesAtendidos
+    {
+        get { return coches_atendidos; }
+    }
+}
+
+class PracticaPOO
+{
+    static void Main(string[] args)
+    {
+        // Create a garage
+        Garaje garaje = new Garaje();
+
+        // Create 2 cars
+        Coche coche1 = new Coche("Toyota", "Corolla");
+        coche1.Motor.Potencia = 120;
+        
+        Coche coche2 = new Coche("Ford", "Focus");
+        coche2.Motor.Potencia = 140;
+
+        // First round of repairs
+        Console.WriteLine("Primera ronda de reparaciones:");
+        
+        Console.WriteLine($"Aceptando {coche1.Marca} {coche1.Modelo}...");
+        if (garaje.AceptarCoche(coche1, "aceite"))
+        {
+            Console.WriteLine("Coche 1 aceptado en el garaje para cambio de aceite.");
+            coche1 = garaje.DevolverCoche();
+            Console.WriteLine($"Coche 1 devuelto. Litros de aceite: {coche1.Motor.LitrosDeAceite}, Averías acumuladas: {coche1.PrecioAverias:C}");
+        }
+
+        Console.WriteLine($"Aceptando {coche2.Marca} {coche2.Modelo}...");
+        if (garaje.AceptarCoche(coche2, "frenos"))
+        {
+            Console.WriteLine("Coche 2 aceptado en el garaje para reparación de frenos.");
+            coche2 = garaje.DevolverCoche();
+            Console.WriteLine($"Coche 2 devuelto. Litros de aceite: {coche2.Motor.LitrosDeAceite}, Averías acumuladas: {coche2.PrecioAverias:C}");
+        }
+
+        // Second round of repairs
+        Console.WriteLine("\nSegunda ronda de reparaciones:");
+        
+        Console.WriteLine($"Aceptando {coche1.Marca} {coche1.Modelo}...");
+        if (garaje.AceptarCoche(coche1, "batería"))
+        {
+            Console.WriteLine("Coche 1 aceptado en el garaje para cambio de batería.");
+            coche1 = garaje.DevolverCoche();
+            Console.WriteLine($"Coche 1 devuelto. Litros de aceite: {coche1.Motor.LitrosDeAceite}, Averías acumuladas: {coche1.PrecioAverias:C}");
+        }
+
+        Console.WriteLine($"Aceptando {coche2.Marca} {coche2.Modelo}...");
+        if (garaje.AceptarCoche(coche2, "aceite"))
+        {
+            Console.WriteLine("Coche 2 aceptado en el garaje para cambio de aceite.");
+            coche2 = garaje.DevolverCoche();
+            Console.WriteLine($"Coche 2 devuelto. Litros de aceite: {coche2.Motor.LitrosDeAceite}, Averías acumuladas: {coche2.PrecioAverias:C}");
+        }
+
+        // Display final information
+        Console.WriteLine("\nInformación final de los coches:");
+        Console.WriteLine($"Coche 1: {coche1.Marca} {coche1.Modelo}");
+        Console.WriteLine($"  Potencia: {coche1.Motor.Potencia} CV");
+        Console.WriteLine($"  Litros de aceite: {coche1.Motor.LitrosDeAceite}");
+        Console.WriteLine($"  Coste total de averías: {coche1.PrecioAverias:C}");
+
+        Console.WriteLine($"Coche 2: {coche2.Marca} {coche2.Modelo}");
+        Console.WriteLine($"  Potencia: {coche2.Motor.Potencia} CV");
+        Console.WriteLine($"  Litros de aceite: {coche2.Motor.LitrosDeAceite}");
+        Console.WriteLine($"  Coste total de averías: {coche2.PrecioAverias:C}");
+
+        Console.WriteLine($"\nTotal de coches atendidos por el garaje: {garaje.CochesAtendidos}");
+    }
+}
