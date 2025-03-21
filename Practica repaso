@@ -1,0 +1,74 @@
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Crear rutas
+        Ruta ruta1 = new Ruta("Centro - Zona Norte", 50, 1000);
+        Ruta ruta2 = new Ruta("Centro - Zona Sur", 35, 1333);
+
+        // Crear buses
+        Bus busPlatinum = new Bus("Auto Bus Plantinum", 22, ruta1);
+        Bus busGold = new Bus("Auto Bus Gold", 15, ruta2);
+
+        // Simular ventas de pasajes
+        busPlatinum.VenderPasajes(5);
+        busGold.VenderPasajes(3);
+
+        // Mostrar reporte
+        busPlatinum.MostrarEstado();
+        busGold.MostrarEstado();
+    }
+}
+
+class Ruta
+{
+    public string Nombre { get; }
+    public int DistanciaKm { get; }  // Distancia en kilómetros
+    public decimal PrecioPasaje { get; }
+
+    public Ruta(string nombre, int distancia, decimal precio)
+    {
+        Nombre = nombre;
+        DistanciaKm = distancia;
+        PrecioPasaje = precio;
+    }
+}
+
+class Bus
+{
+    public string Nombre { get; }
+    public int Capacidad { get; }
+    public int AsientosOcupados { get; private set; }
+    public decimal VentasTotales { get; private set; }
+    public Ruta RutaAsignada { get; }
+
+    public int AsientosDisponibles => Capacidad - AsientosOcupados;
+
+    public Bus(string nombre, int capacidad, Ruta ruta)
+    {
+        Nombre = nombre;
+        Capacidad = capacidad;
+        RutaAsignada = ruta;
+        AsientosOcupados = 0;
+        VentasTotales = 0;
+    }
+
+    public void VenderPasajes(int cantidad)
+    {
+        if (AsientosOcupados + cantidad <= Capacidad)
+        {
+            AsientosOcupados += cantidad;
+            VentasTotales += cantidad * RutaAsignada.PrecioPasaje;
+        }
+    }
+
+    public void MostrarEstado()
+    {
+        Console.WriteLine($"{Nombre} {AsientosOcupados} Pasajeros " +
+                          $"Ventas {VentasTotales.ToString("N0")} " +
+                          $"quedan {AsientosDisponibles} asientos disponibles");
+    }
+}
