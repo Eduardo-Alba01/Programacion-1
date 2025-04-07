@@ -1,0 +1,200 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace ChimiMiBarriga
+{
+    // Clase base para todas las hamburguesas
+    public class Hamburguesa
+    {
+        protected string nombre;
+        protected string tipoPan;
+        protected string tipoCarne;
+        protected double precioBase;
+        protected List<IngredienteAdicional> ingredientesAdicionales;
+        protected int maxIngredientesAdicionalesPermitidos;
+
+        private const int MAX_ADICIONALES_CLASICA = 4;
+
+        public Hamburguesa(string nombre, string tipoPan, string tipoCarne, double precioBase)
+        {
+            this.nombre = nombre;
+            this.tipoPan = tipoPan;
+            this.tipoCarne = tipoCarne;
+            this.precioBase = precioBase;
+            this.ingredientesAdicionales = new List<IngredienteAdicional>();
+            this.maxIngredientesAdicionalesPermitidos = MAX_ADICIONALES_CLASICA;
+        }
+
+        public virtual void AgregarIngredienteAdicional(string nombre, double precio)
+        {
+            if (ingredientesAdicionales.Count < maxIngredientesAdicionalesPermitidos)
+            {
+                IngredienteAdicional ingrediente = new IngredienteAdicional(nombre, precio);
+                this.ingredientesAdicionales.Add(ingrediente);
+                Console.WriteLine($" + Añadido: {ingrediente.Nombre} (${ingrediente.Precio:F2})");
+            }
+            else
+            {
+                Console.WriteLine($" ! No se pueden añadir más de {maxIngredientesAdicionalesPermitidos} ingredientes adicionales a la {this.nombre}.");
+            }
+        }
+
+        public virtual double CalcularPrecioTotal()
+        {
+            double precioTotalAdicionales = 0;
+            // Suma el precio de todos los ingredientes adicionales usando LINQ
+            precioTotalAdicionales = ingredientesAdicionales.Sum(ing => ing.Precio);
+
+            return this.precioBase + precioTotalAdicionales;
+        }
+
+        public virtual void MostrarDetalleVenta()
+        {
+            Console.WriteLine($"--- Detalle {this.nombre} ---");
+            Console.WriteLine($"Tipo de Pan: {this.tipoPan}");
+            Console.WriteLine($"Tipo de Carne: {this.tipoCarne}");
+            Console.WriteLine($"Precio Base: ${this.precioBase:F2}");
+
+            if (ingredientesAdicionales.Any())
+            {
+                Console.WriteLine("Ingredientes Adicionales:");
+                foreach (var ingrediente in ingredientesAdicionales)
+                {
+                    Console.WriteLine($"  - {ingrediente.Nombre}: ${ingrediente.Precio:F2}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Sin ingredientes adicionales.");
+            }
+
+            Console.WriteLine("---------------------------");
+            Console.WriteLine($"Precio Total: ${CalcularPrecioTotal():F2}");
+            Console.WriteLine("===========================");
+        }
+
+        public string Nombre => nombre;
+        public double PrecioBase => precioBase;
+    }
+
+    // Clase para representar un ingrediente adicional y su precio
+    public class IngredienteAdicional
+    {
+        public string Nombre { get; private set; }
+        public double Precio { get; private set; }
+
+        public IngredienteAdicional(string nombre, double precio)
+        {
+            Nombre = nombre;
+            Precio = precio;
+        }
+    }
+
+    // Clases Derivadas 
+
+    // Hamburguesa Saludable
+    public class HamburguesaSaludable : Hamburguesa
+    {
+        private List<IngredienteAdicional> ingredientesAdicionalesSaludables;
+        private const int MAX_ADICIONALES_SALUDABLES_ESPECIFICOS = 2;
+        private const int MAX_ADICIONALES_SALUDABLES_TOTAL = 6; // Límite total
+
+        public HamburguesaSaludable(string tipoCarne, double precioBase)
+            : base("Hamburguesa Saludable", "Pan Integral", tipoCarne, precioBase) // Llama al constructor base
+        {
+            this.ingredientesAdicionalesSaludables = new List<IngredienteAdicional>();
+        }
+
+        public override void AgregarIngredienteAdicional(string nombre, double precio)
+        {
+
+            if (ingredientesAdicionales.Count < MAX_ADICIONALES_SALUDABLES_TOTAL)
+            {
+                base.AgregarIngredienteAdicional(nombre, precio);
+            }
+            else
+            {
+                Console.WriteLine($" ! No se pueden añadir más de {MAX_ADICIONALES_SALUDABLES_TOTAL} ingredientes adicionales en total a la {this.nombre}.");
+            }
+        }
+    }
+
+    // Hamburguesa Premium
+    public class HamburguesaPremium : Hamburguesa
+    {
+        private const double PRECIO_PAPITAS = 1.50;
+        private const double PRECIO_BEBIDA = 2.00;
+
+        public HamburguesaPremium(string tipoPan, string tipoCarne, double precioBase)
+            : base("Hamburguesa Premium", tipoPan, tipoCarne, precioBase)
+        {
+
+
+            Console.WriteLine($"Creando {this.nombre}...");
+            IngredienteAdicional papitas = new IngredienteAdicional("Papitas Fritas", PRECIO_PAPITAS);
+            base.ingredientesAdicionales.Add(papitas); 
+            Console.WriteLine($" + Añadido automáticamente: {papitas.Nombre} (${papitas.Precio:F2})");
+
+            IngredienteAdicional bebida = new IngredienteAdicional("Bebida", PRECIO_BEBIDA);
+            base.ingredientesAdicionales.Add(bebida);
+            Console.WriteLine($" + Añadido automáticamente: {bebida.Nombre} (${bebida.Precio:F2})");
+
+            this.maxIngredientesAdicionalesPermitidos = 2; 
+        }
+
+        
+        public override void AgregarIngredienteAdicional(string nombre, double precio)
+        {
+            Console.WriteLine($" ! No se permiten ingredientes adicionales en la {this.nombre}. Ya incluye Papitas y Bebida.");
+        }
+    }
+
+    // para Probar
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Bienvenido a Chimi MiBarriga del Sr. Billy Navaja!");
+            Console.WriteLine("-------------------------------------------------\n");
+
+            // Crear una hamburguesa Clásica
+            Console.WriteLine("Preparando una Hamburguesa Clásica...");
+            Hamburguesa clasica = new Hamburguesa("Hamburguesa Clásica", "Pan Blanco", "Res", 5.00);
+            clasica.AgregarIngredienteAdicional("Lechuga", 0.50);
+            clasica.AgregarIngredienteAdicional("Tomate", 0.60);
+            clasica.AgregarIngredienteAdicional("Bacon", 1.50);
+            clasica.AgregarIngredienteAdicional("Queso Cheddar", 1.00);
+            clasica.AgregarIngredienteAdicional("Pepinillos", 0.40); // Intenta añadir un 5to ingrediente
+            Console.WriteLine();
+            clasica.MostrarDetalleVenta();
+            Console.WriteLine("\n---\n");
+
+            // Crear una hamburguesa Saludable
+            Console.WriteLine("Preparando una Hamburguesa Saludable...");
+            HamburguesaSaludable saludable = new HamburguesaSaludable("Pavo", 6.50);
+            saludable.AgregarIngredienteAdicional("Lechuga Romana", 0.70);
+            saludable.AgregarIngredienteAdicional("Cebolla Morada", 0.50);
+            saludable.AgregarIngredienteAdicional("Aguacate", 1.80);
+            saludable.AgregarIngredienteAdicional("Queso Suizo", 1.20);
+            saludable.AgregarIngredienteAdicional("Mostaza Dijon", 0.40);
+            saludable.AgregarIngredienteAdicional("Brotes de Alfalfa", 0.90); 
+            saludable.AgregarIngredienteAdicional("Huevo Frito", 1.30); 
+            Console.WriteLine();
+            saludable.MostrarDetalleVenta();
+            Console.WriteLine("\n---\n");
+
+
+            // Crear una hamburguesa Premium
+            Console.WriteLine("Preparando una Hamburguesa Premium...");
+            HamburguesaPremium premium = new HamburguesaPremium("Pan Brioche", "Angus", 8.00);
+            premium.AgregarIngredienteAdicional("Queso Extra", 1.00);
+            premium.AgregarIngredienteAdicional("Cebolla Caramelizada", 1.20);
+            Console.WriteLine();
+            premium.MostrarDetalleVenta();
+            Console.WriteLine("\n---\n");
+            Console.WriteLine("Proceso de pedidos finalizado. Presione Enter para salir.");
+            Console.ReadLine();
+        }
+    }
+}
